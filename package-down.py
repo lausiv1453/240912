@@ -35,21 +35,20 @@ run_command([
     llm_model_path
 ])
 
+# PyTorch 다운로드
 print("Downloading PyTorch package...")
-# 필요한 패키지 다운로드
 run_command([
     "wget",
-    "https://download.pytorch.org/whl/cu113/torch-1.10.0+cu113-cp39-cp39-linux_x86_64.whl",
+    "https://download.pytorch.org/whl/cu118/torch-2.0.1+cu118-cp39-cp39-linux_x86_64.whl",
     "-O",
-    f"{package_path}/torch-1.10.0+cu113-cp39-cp39-linux_x86_64.whl"
+    f"{package_path}/torch-2.0.1+cu118-cp39-cp39-linux_x86_64.whl"
 ])
 
+# Transformers 다운로드
 print("Downloading Transformers package...")
 run_command([
     "wget",
-    "https://files.pythonhosted.org/packages/5c/26/7b6c5eb3db37e4dfb7e2a78aafe1432d8a9c6a2c0832e55d94e5d45a4a8d/transformers-4.10.0-py3-none-any.whl",
+    "https://files.pythonhosted.org/packages/ce/0a/2e52e9e23ea4c86ef7e6ec13dfdc15d295c0b66fba4f6074ed4ad4450d8e/transformers-4.30.2-py3-none-any.whl",
     "-O",
-    f"{package_path}/transformers-4.10.0-py3-none-any.whl"
+    f"{package_path}/transformers-4.30.2-py3-none-any.whl"
 ])
-
-print("All models and packages are downloaded.")
