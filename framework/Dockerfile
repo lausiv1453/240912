@@ -1,11 +1,12 @@
-FROM python:3.9
+FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY . /app
+COPY requirements.txt requirements.txt
+COPY packages /packages
 
-RUN pip install --no-index --find-links ../packages -r requirements.txt
+RUN pip install --no-cache-dir --find-links /packages -r requirements.txt
 
-EXPOSE 8002
+COPY . .
 
 CMD ["python", "app.py"]

@@ -1,3 +1,2 @@
---find-links ../packages
-flask
 qdrant-client
+pandas

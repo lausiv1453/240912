@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
-
+client = QdrantClient(host='vector_db', port=6333)
 @app.route('/query', methods=['POST'])
 def query():
     data = request.json

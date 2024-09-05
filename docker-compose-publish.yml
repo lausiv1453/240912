@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   embedding_model:
-    build: ./embedding_model
+    image: ./embedding_model
     volumes:
       - ./packages:/packages
     ports:
@@ -28,3 +28,12 @@ services:
       - ./packages:/packages
     ports:
       - "5004:5000"
+
+
+# 
+
+docker build -t yourdockerhubusername/embedding_model:latest ./embedding_model
+
+services:
+  embedding_model:
+    image: yourdockerhubusername/embedding_model:latest
