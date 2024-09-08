@@ -60,4 +60,13 @@
                     contentType: 'application/json',
                     data: JSON.stringify({ message: input2 }),
                     success: function(response) {
-                        // Step 3 폼을 보이고, LLM 결과를 Step
+                        // Step 3 폼을 보이고, LLM 결과를 Step 3에 출력
+                        $('#step3-form').show();
+                        $('#input3').val(response.response);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
