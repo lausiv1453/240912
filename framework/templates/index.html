@@ -3,37 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAG Pipeline Interface</title>
+    <title>RAG Pipeline</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>RAG Pipeline Interface</h1>
-    <form method="POST">
-        <label for="query">Enter your query:</label>
-        <input type="text" id="query" name="query" required>
-        <button type="submit">Submit</button>
+    <h1>RAG Pipeline 검증</h1>
+
+    <!-- Step 1: 사용자로부터 질의 입력 -->
+    <form id="step1-form">
+        <label for="input1">Step 1: 질의 입력</label><br>
+        <input type="text" id="input1" name="input1" placeholder="질의를 입력하세요">
+        <button type="submit" id="step1-btn">Step 1 처리</button>
     </form>
 
-    {% if query %}
-    <div class="results">
-        <h2>Query:</h2>
-        <p>{{ query }}</p>
+    <!-- Step 2: Step 1의 결과를 출력하고 임베딩 모델에서 검색 결과를 자동 입력 -->
+    <form id="step2-form" style="display: none;">
+        <label for="input2">Step 2: 임베딩 모델 검색 결과</label><br>
+        <input type="text" id="input2" name="input2">
+        <button type="submit" id="step2-btn">Step 2 처리</button>
+    </form>
 
-        <h2>Generated Embedding:</h2>
-        <p>{{ embedding }}</p>
+    <!-- Step 3: LLM 결과 출력 -->
+    <form id="step3-form" style="display: none;">
+        <label for="input3">Step 3: LLM 생성 결과</label><br>
+        <input type="text" id="input3" name="input3" readonly>
+    </form>
 
-        <h2>Search Results:</h2>
-        <ul>
-            {% for result in search_results %}
-            <li>{{ result.payload.content }} (Score: {{ result.score }})</li>
-            {% endfor %}
-        </ul>
+    <script>
+        $(document).ready(function() {
+            // Step 1 처리
+            $('#step1-form').on('submit', function(event) {
+                event.preventDefault();
+                let input1 = $('#input1').val();
+                
+                $.ajax({
+                    url: '/query',  // Flask 엔드포인트
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: input1 }),
+                    success: function(response) {
+                        // Step 2 폼을 보이고, 결과를 Step 2 입력창에 자동으로 입력
+                        $('#step2-form').show();
+                        $('#input2').val(response.response);
+                    }
+                });
+            });
 
-        <h2>Top Document:</h2>
-        <p>{{ top_document }}</p>
-
-        <h2>Final Answer:</h2>
-        <p>{{ final_answer }}</p>
-    </div>
-    {% endif %}
-</body>
-</html>
+            // Step 2 처리
+            $('#step2-form').on('submit', function(event) {
+                event.preventDefault();
+                let input2 = $('#input2').val();
+                
+                $.ajax({
+                    url: '/query',  // Flask 엔드포인트
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: input2 }),
+                    success: function(response) {
+                        // Step 3 폼을 보이고, LLM 결과를 Step

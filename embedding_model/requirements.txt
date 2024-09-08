@@ -1,3 +1,4 @@
-sentence-transformers==2.2.0
-numpy
-scipy
+flask==2.0.1
+werkzeug==2.0.1
+sentence-transformers==2.2.2
+huggingface_hub==0.8.1
