@@ -1,30 +1,64 @@
 import os
+import subprocess
 
-# 패키지를 저장할 디렉토리 생성
-os.makedirs('packages', exist_ok=True)
+# 폴더 경로 설정
+hand_package_dir = "hand-packages"
+package_dir = "packages"
 
-# 임베딩 모델 다운로드
-print("Downloading embedding model...")
-os.system("wget -P packages https://huggingface.co/sentence-transformers/bert-base-nli-mean-tokens/resolve/main/pytorch_model.bin")
+# 수동 설치 패키지 다운로드 및 설치 함수
+def install_manual_packages():
+    if not os.path.exists(hand_package_dir):
+        os.makedirs(hand_package_dir)
 
-# LLM 모델 다운로드
-print("Downloading LLM model...")
-os.system("wget -P packages https://huggingface.co/gpt2/resolve/main/pytorch_model.bin")
+    # Python 3.9 및 필수 패키지 다운로드
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "python39"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "python39-pip"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "python39-devel"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "gcc"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "git"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "curl"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "make"], shell=True)
 
-# PyTorch 패키지 다운로드
-print("Downloading PyTorch package...")
-os.system("wget -P packages https://download.pytorch.org/whl/cu118/torch-2.0.1+cu118-cp39-cp39-linux_x86_64.whl")
+    # Docker-Compose 설치
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "docker-compose"], shell=True)
 
-# Transformers 패키지 다운로드
-print("Downloading Transformers package...")
-os.system("wget -P packages https://files.pythonhosted.org/packages/61/21/6ea1b9aa12a03a3ae7b8d7ed8c0a4f34e54a5b6c1a917b1a9e8b8edc1c7f/transformers-4.30.2-py3-none-any.whl")
+    # Qdrant 설치 (수동 설치용 다운로드)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "qdrant-client"], shell=True)
 
-# requirements.txt에 필요한 패키지 다운로드
-print("Downloading requirements packages...")
-os.system("pip download -r embedding_model/requirements.txt -d packages")
-os.system("pip download -r vector_db/requirements.txt -d packages")
-os.system("pip download -r framework/requirements.txt -d packages")
-os.system("pip download -r llm/requirements.txt -d packages")
+    # Setuptools (distutils 설치용)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "setuptools"], shell=True)
 
-print("All packages downloaded successfully.")
+    # CUDA 관련 패키지 설치 (필요한 경우)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "numba"], shell=True)
+    subprocess.run(["pip", "download", "--dest", hand_package_dir, "numpy"], shell=True)
 
+# 자동 패키지 설치 함수
+def download_packages(requirements_file):
+    if not os.path.exists(package_dir):
+        os.makedirs(package_dir)
+
+    with open(requirements_file, "r") as f:
+        packages = f.readlines()
+
+    for package in packages:
+        package = package.strip()
+        if package:
+            print(f"Downloading {package}...")
+            subprocess.run([f"pip download --no-deps --dest {package_dir} {package}"], shell=True)
+
+# 각 모듈별 requirements.txt 경로
+requirements_files = [
+    "llm/requirements.txt",
+    "embedding_model/requirements.txt",
+    "framework/requirements.txt",
+    "vector_db/requirements.txt"
+]
+
+# 수동 설치 수행
+install_manual_packages()
+
+# 자동 패키지 설치 수행
+for req_file in requirements_files:
+    download_packages(req_file)
+
+print("All packages have been downloaded and saved to the respective folders.")

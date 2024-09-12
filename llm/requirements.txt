@@ -1,3 +1,4 @@
-flask==2.0.1
-transformers==4.30.2
-torch==2.0.1+cpu  # CPU 전용 PyTorch 버전
+# CUDA 기반 연산에 필요한 패키지들
+numba==0.60.0
+numpy==1.23.1
+flask==2.2.2
